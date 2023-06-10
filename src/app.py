@@ -31,12 +31,73 @@ def handle_hello():
     # this is how you can use the Family datastructure by calling its methods
     members = jackson_family.get_all_members()
     response_body = {
-        "hello": "world",
         "family": members
     }
 
 
     return jsonify(response_body), 200
+
+@app.route("/member", methods =["POST"])
+def member_addinator():
+    to_add = request.json
+   
+
+    if(to_add["first_name"] is not None and to_add["age"] is not None and to_add["lucky_numbers"] is not None):
+        if to_add.get("id") is None:
+            to_add["id"] = jackson_family._generateId()
+         
+        jackson_family.add_member(to_add)
+
+        response_body = {
+                "member" : to_add,
+                "message": "added"
+            }
+        return jsonify(response_body),200
+    else: 
+        response_body = {
+                "message": "error, missing data of the member"
+            }
+        return jsonify(response_body),400
+
+@app.route("/member/<int:member_id>", methods = ["GET"])
+def member_getinator(member_id):
+    member = jackson_family.get_member(member_id)
+
+    if(member):
+        response_body = {
+            "message": "found",
+            "member" : member
+        }
+        return jsonify(response_body),200
+    else: 
+        response_body = {
+            "message": "not found"
+        }
+        return jsonify(response_body),400
+
+    
+    
+
+
+@app.route("/member/<int:member_id>",methods=["DELETE"])
+def member_deletinator(member_id):
+
+    member = jackson_family.get_member(member_id)
+
+    if(member):
+        jackson_family.delete_member(member_id)
+        response_body = {
+            "message": "deleted"
+        }
+        return jsonify(response_body),200
+    else: 
+        response_body = {
+            "message": "member not in the family"
+        }
+        return jsonify(response_body),400
+
+
+
 
 # this only runs if `$ python src/app.py` is executed
 if __name__ == '__main__':
