@@ -42,7 +42,7 @@ def member_addinator():
     to_add = request.json
    
 
-    if(to_add["first_name"] is not None and to_add["age"] is not None and to_add["lucky_numbers"] is not None):
+    if(to_add.get("first_name") is not None and to_add.get("age") is not None and to_add.get("lucky_numbers") is not None):
         if to_add.get("id") is None:
             to_add["id"] = jackson_family._generateId()
          
